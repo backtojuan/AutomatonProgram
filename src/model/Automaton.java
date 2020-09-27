@@ -1,13 +1,11 @@
 //-----------------------------------------------------------------------------------------------------------
 package model;
-
-import java.util.ArrayList;
+//-----------------------------------------------------------------------------------------------------------
 import java.util.LinkedList;
 import java.util.List;
-
 //-----------------------------------------------------------------------------------------------------------
 /**
- * This class manages the necessary attributes, constants and methods to create finite automatons
+ * This class manages the necessary attributes, constants and methods to create finite automatons (Mealy and moore ones)
  * @author Juan José Valencia Jaramillo
  * @version 1.0
  *
@@ -21,8 +19,10 @@ public class Automaton {
 	private String[] alphabet;
 	private List<State> states;
 	private List<Transition> transitions;
-	private State q0;
-	private List<State> acceptanceStates;
+	private State initialState;
+	private String type;
+	public final static String MEALY = "Mealy";
+	public final static String MOORE = "Moore";
 //-----------------------------------------------------------------------------------------------------------
 	/**
 	 * Secondary attributes and constants for this class.
@@ -36,22 +36,31 @@ public class Automaton {
 	 * @param alphabet contains the valid symbols used to create strings that can be accepted for this automaton.
 	 * @param accepStates contains the specific states that lead the automaton to accept the input string.
 	 */
-	public Automaton(State initialState, String[] alphabet) {
+	public Automaton(String[] alphabet, String type) {
 		this.alphabet = alphabet;
+		this.type = type;
 		states = new LinkedList<State>();
 		transitions = new LinkedList<Transition>();
-		this.q0 = initialState;
-		acceptanceStates = new ArrayList<State>();
 	}
 //-----------------------------------------------------------------------------------------------------------
 	/**
 	 * This method returns the alphabet set of an automaton.
 	 * <b>Pre:</b> the automaton exists. <br>
 	 * <b>Pos:</b> the attribute obtained is indeed, the alphabet. <br>
-	 * @return the alphata of this automaton
+	 * @return the alphabet of this automaton.
 	 */
 	public String[] getAlphabet(){
 		return alphabet;
+	}
+//-----------------------------------------------------------------------------------------------------------
+	/**
+	 * This method returns the type of an automaton.
+	 * <b>Pre:</b> the automaton exists. <br>
+	 * <b>Pos:</b> the attribute obtained is indeed, the type. <br>
+	 * @return the type of this automaton.
+	 */
+	public String getType() {
+		return type;
 	}
 //-----------------------------------------------------------------------------------------------------------
 	/**
@@ -81,17 +90,7 @@ public class Automaton {
 	 * @return the initial state of this automaton.
 	 */
 	public State getInitialState() {
-		return q0;
-	}
-//-----------------------------------------------------------------------------------------------------------
-	/**
-	 * This method returns the acceptance states set of an automaton.
-	 * <b>Pre:</b> the automaton exists. <br>
-	 * <b>Pos:</b> the attribute obtained is indeed, the set of acceptance states. <br>
-	 * @return the acceptance states set of this automaton.
-	 */
-	public List<State> getAcceptanceStates() {
-		return acceptanceStates;
+		return initialState;
 	}
 //-----------------------------------------------------------------------------------------------------------
 	/**
@@ -105,6 +104,16 @@ public class Automaton {
 	}
 //-----------------------------------------------------------------------------------------------------------
 	/**
+	 * This method sets the number of states of an automaton.
+	 * <b>Pre:</b> the automaton exists. <br>
+	 * <b>Pos:</b> the number of states is indeed, set properly. <br>
+	 * @param newNumberOfStates the number of states for this automaton.
+	 */
+	public void setNumberOfStates(int newNumberOfStates) {
+		this.numberOfStates = newNumberOfStates;
+	}
+//-----------------------------------------------------------------------------------------------------------
+	/**
 	 * This method returns the total transitions of an automaton.
 	 * <b>Pre:</b> the automaton exists. <br>
 	 * <b>Pos:</b> the attribute obtained is indeed, the set of acceptance states. <br>
@@ -112,6 +121,26 @@ public class Automaton {
 	 */
 	public int getNumberOfTransitions() {
 		return numberOfTransitions;
+	}
+//-----------------------------------------------------------------------------------------------------------
+	/**
+	 * This method sets the number of transitions of an automaton.
+	 * <b>Pre:</b> the automaton exists. <br>
+	 * <b>Pos:</b> the number of transtitions is indeed, set properly. <br>
+	 * @param newNumberOfTransitions the number of transitions for this automaton.
+	 */
+	public void setNumberOfTransitions(int newNumberOfTransitions) {
+		this.numberOfTransitions = newNumberOfTransitions;
+	}
+//-----------------------------------------------------------------------------------------------------------
+	/**
+	 * This method sets the initial state of an automaton
+	 * <b>Pre:</b> the automaton exists. <br>
+	 * <b>Pos:</b> the state is indeed, set properly. <br>
+	 * @param initialState the initial state for this automaton
+	 */
+	public void setInitialState(State initialState) {
+		this.initialState = initialState;
 	}
 //-----------------------------------------------------------------------------------------------------------
 	/**
@@ -124,9 +153,6 @@ public class Automaton {
 	public void addState(State state) {
 		state.setIndex(numberOfStates);
 		states.add(state);
-		if(state.getIsAcceptance()) {
-			acceptanceStates.add(state);
-		}
 		numberOfStates++;
 	}
 //-----------------------------------------------------------------------------------------------------------
@@ -139,13 +165,37 @@ public class Automaton {
 	 * @param source the current state of the automaton before the input symbol is processed.
 	 * @param destination the following state of the automaton after the input symbol is processed.
 	 */
-	public void addTransition(String input, State source, State destination) {
-		Transition transition = new Transition(input, source, destination);
+	public void addTransition(Transition transition) {
 		transitions.add(transition);
-		destination.setPred(source);
+		transition.getDestination().setPred(transition.getSource());
 		numberOfTransitions++;
 	}
 //-----------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------	
+	/**
+	 * This method searchs a state into the states of an automaton 
+	 * <b>Pre:</b> the automaton exists.
+	 * <b>Pos:</b> if the state with this name exists, the correct state is returned.
+	 * @param name the name of the state to be search
+	 * @return the State associated with the given name
+	 */
+	public State searchState(String name) {
+		State state = null;
+		for(int i=0;i<states.size();i++) {
+			if(states.get(i).getName().equals(name)) {
+				state = states.get(i);
+			}
+		}
+		return state;
+	}
+//-----------------------------------------------------------------------------------------------------------
+	@Override
+	/**
+	 * This method returns a string report of an automaton
+	 */
+	public String toString() {
+		return "Type: " + type + "\n" + "Total States: " + numberOfStates + "\n" + "Total transitions: " 
+				+ numberOfTransitions + "\n" ;
+	}
+//-----------------------------------------------------------------------------------------------------------
 }
 //-----------------------------------------------------------------------------------------------------------

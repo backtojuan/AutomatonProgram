@@ -13,8 +13,7 @@ public class State {
 	 * This attributes are related to the state of a finite automaton.
 	 */
 	private String name;
-	private boolean isFinal;
-	private boolean isAcceptance;
+	private String output;
 //-----------------------------------------------------------------------------------------------------------
 	/**
 	 * Secondary attributes and constants for this class.
@@ -39,12 +38,10 @@ public class State {
 	/**
 	 * <b>Class constructor</b>
 	 * @param name name or identifier of the state.
-	 * @param isFinal specifies is the current state is the final state of the automaton.
 	 */
-	public State(String name, boolean isFinal, boolean isAcceptance) {
+	public State(String name) {
 		this.name = name;
-		this.isFinal = isFinal;
-		this.isAcceptance = isAcceptance;
+		this.output = null;
 		pred = null;
 		color = WHITE;
 	}
@@ -60,24 +57,26 @@ public class State {
 	}
 //-----------------------------------------------------------------------------------------------------------	
 	/**
-	 * This method returns a boolean value that indicates if either a state is final or not.
-	 * <b>Pre:</b> the state exists. <br>
-	 * <b>Pos:</b> the attribute obtained is indeed, the boolean value. <br>
-	 * @return the boolean value for this state.
+	 * This method returns the associated output for this state of an automaton only if it's a moore one
+	 * otherwise this value must be null
+	 * <b>Pre:</b> the state exists. 
+	 * <b>Pre:</b> the automaton is a moore one. <br>
+	 * <b>Pos:</b> the attribute obtained is indeed, the output. <br>  
+	 * @return output the output of this state.
 	 */
-	public boolean getIsFinal() {
-		return isFinal;
+	public String getOutput() {
+		return output;
 	}
 //-----------------------------------------------------------------------------------------------------------	
 	/**
-	 * This method returns a boolean value that indicates if either a state is acceptance or not.
+	 * This method sets the output value changing it to a new one.
 	 * <b>Pre:</b> the state exists. <br>
-	 * <b>Pos:</b> the attribute obtained is indeed, the boolean value. <br>
-	 * @return the boolean value for this state.
+	 * <b>Pos:</b> the value is indeed, changed properly. <br>
+	 * @param newOutput the new output for this state.
 	 */
-	public boolean getIsAcceptance() {
-		return isAcceptance;
-	}		
+	public void setOutput(String newOutput) {
+		this.output = newOutput;
+	}
 //-----------------------------------------------------------------------------------------------------------
 	/**
 	 * This method returns the initial stamp value of a vertex(state). 
@@ -177,6 +176,21 @@ public class State {
 	 */
 	public void setPred(State newPred) {
 		this.pred = newPred;
+	}
+//-----------------------------------------------------------------------------------------------------------
+	@Override
+	/**
+	 * This method returns a String report with information of the state
+	 */
+	public String toString() {
+		String mssg;
+		if(this.getOutput() == null) {
+			mssg = "Name: " + name + "\n";
+		}
+		else {
+			mssg = "Name: " + name + "\n" + "Output: " + output + "\n"; 
+		}
+		return mssg;
 	}
 //-----------------------------------------------------------------------------------------------------------
 }

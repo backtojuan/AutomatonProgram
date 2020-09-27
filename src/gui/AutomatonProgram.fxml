@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -23,27 +24,32 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="522.0" prefWidth="678.0">
                      <children>
-                        <BorderPane fx:id="pane" prefHeight="545.0" prefWidth="719.0">
+                        <BorderPane prefHeight="545.0" prefWidth="719.0">
                            <bottom>
                               <GridPane BorderPane.alignment="CENTER">
                                 <columnConstraints>
                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                 </columnConstraints>
                                 <rowConstraints>
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
-                                    <Button mnemonicParsing="false" onAction="#generateConnectedAutomaton" stylesheets="@css/AutomatonProgramTheme.css" text="Generate Connected Automaton" GridPane.rowIndex="2">
+                                    <Button fx:id="conectedButton" mnemonicParsing="false" onAction="#generateConnectedAutomaton" stylesheets="@css/AutomatonProgramTheme.css" text="Generate Connected Automaton" GridPane.rowIndex="1">
                                        <GridPane.margin>
-                                          <Insets left="70.0" />
+                                          <Insets left="25.0" />
                                        </GridPane.margin>
                                     </Button>
-                                    <Button mnemonicParsing="false" onAction="#generateMinimumAutomaton" stylesheets="@css/AutomatonProgramTheme.css" text="Generate Minimum Automaton" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                    <Button fx:id="minimumButton" mnemonicParsing="false" onAction="#generateMinimumAutomaton" stylesheets="@css/AutomatonProgramTheme.css" text="Generate Minimum Automaton" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <GridPane.margin>
-                                          <Insets left="90.0" />
+                                          <Insets left="25.0" />
+                                       </GridPane.margin>
+                                    </Button>
+                                    <Button mnemonicParsing="false" onAction="#clearForm" text="Add a new automaton" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets left="50.0" />
                                        </GridPane.margin>
                                     </Button>
                                  </children>
@@ -59,41 +65,205 @@
                                 <rowConstraints>
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
-                                    <TextField fx:id="numberOfStates" prefHeight="26.0" prefWidth="221.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                    <TextField fx:id="symbolsOfAlphabet" prefHeight="26.0" prefWidth="221.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                        <GridPane.margin>
                                           <Insets left="50.0" right="50.0" />
                                        </GridPane.margin>
                                     </TextField>
-                                    <Label stylesheets="@css/AutomatonProgramTheme.css" text="Number of states" GridPane.rowIndex="2">
+                                    <Label stylesheets="@css/AutomatonProgramTheme.css" text="Enter the symbols of the alphabet" GridPane.rowIndex="4">
                                        <GridPane.margin>
-                                          <Insets left="75.0" />
+                                          <Insets left="50.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Button mnemonicParsing="false" onAction="#listStatesCreation" stylesheets="@css/AutomatonProgramTheme.css" text="Start " GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                    <Button mnemonicParsing="false" onAction="#startCreation" stylesheets="@css/AutomatonProgramTheme.css" text="Start" GridPane.columnIndex="2" GridPane.rowIndex="5">
                                        <GridPane.margin>
                                           <Insets left="120.0" />
                                        </GridPane.margin>
                                     </Button>
-                                    <ImageView fitHeight="46.0" fitWidth="50.0" onMouseClicked="#exitSystem" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                                    <ImageView fitHeight="46.0" fitWidth="50.0" onMouseClicked="#exitSystem" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
                                        <image>
                                           <Image url="@imgs/Log%20Out.png" />
                                        </image>
                                        <GridPane.margin>
-                                          <Insets left="120.0" top="25.0" />
+                                          <Insets left="100.0" top="25.0" />
                                        </GridPane.margin>
                                     </ImageView>
-                                    <Label text="Enter the states" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <Label text="separate with &quot;,&quot; the symbols" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                        <GridPane.margin>
-                                          <Insets left="55.0" />
+                                          <Insets left="50.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label stylesheets="@css/AutomatonProgramTheme.css" text="Enter the number of states" GridPane.rowIndex="5">
+                                       <GridPane.margin>
+                                          <Insets left="50.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label stylesheets="@css/AutomatonProgramTheme.css" text="Enter the number of transitions" GridPane.rowIndex="6">
+                                       <GridPane.margin>
+                                          <Insets left="50.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <TextField fx:id="numberOfStates" prefHeight="26.0" prefWidth="221.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                       <GridPane.margin>
+                                          <Insets left="50.0" right="50.0" />
+                                       </GridPane.margin>
+                                    </TextField>
+                                    <TextField fx:id="numberOfTransitions" prefHeight="26.0" prefWidth="221.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                                       <GridPane.margin>
+                                          <Insets left="50.0" right="50.0" />
+                                       </GridPane.margin>
+                                    </TextField>
+                                    <ComboBox fx:id="automatonType" prefWidth="150.0" promptText="Select type" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets left="50.0" />
+                                       </GridPane.margin>
+                                    </ComboBox>
+                                    <Label text="Select the type of the automaton" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets left="50.0" />
                                        </GridPane.margin>
                                     </Label>
                                  </children>
                               </GridPane>
                            </top>
+                           <center>
+                              <GridPane BorderPane.alignment="CENTER">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <GridPane GridPane.rowIndex="1">
+                                      <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <Label text="TRANSITIONS" GridPane.columnIndex="1">
+                                             <GridPane.margin>
+                                                <Insets />
+                                             </GridPane.margin>
+                                          </Label>
+                                          <Label text="Input symbol" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                             <GridPane.margin>
+                                                <Insets />
+                                             </GridPane.margin>
+                                          </Label>
+                                          <TextField fx:id="inputSymbol" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                             <GridPane.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </GridPane.margin>
+                                          </TextField>
+                                          <Label text="Source" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                             <GridPane.margin>
+                                                <Insets left="25.0" />
+                                             </GridPane.margin>
+                                          </Label>
+                                          <TextField fx:id="sourceStateName" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                                             <GridPane.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </GridPane.margin>
+                                          </TextField>
+                                          <Label text="Destination" GridPane.columnIndex="5" GridPane.rowIndex="1">
+                                             <GridPane.margin>
+                                                <Insets left="15.0" />
+                                             </GridPane.margin>
+                                          </Label>
+                                          <TextField fx:id="destinationStateName" GridPane.columnIndex="6" GridPane.rowIndex="1">
+                                             <GridPane.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </GridPane.margin>
+                                          </TextField>
+                                          <Button fx:id="transitionButton" mnemonicParsing="false" onAction="#addTransition" stylesheets="@css/AutomatonProgramTheme.css" text="Add" GridPane.columnIndex="7" GridPane.rowIndex="1">
+                                             <GridPane.margin>
+                                                <Insets left="25.0" />
+                                             </GridPane.margin>
+                                          </Button>
+                                          <Label text="Output symbol" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                             <GridPane.margin>
+                                                <Insets />
+                                             </GridPane.margin>
+                                          </Label>
+                                          <TextField fx:id="outputTransitionName" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                             <GridPane.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </GridPane.margin>
+                                          </TextField>
+                                       </children>
+                                    </GridPane>
+                                    <GridPane>
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <Label text="Name" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                             <GridPane.margin>
+                                                <Insets />
+                                             </GridPane.margin>
+                                          </Label>
+                                          <TextField fx:id="stateName" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                             <GridPane.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </GridPane.margin>
+                                          </TextField>
+                                          <Button fx:id="stateButton" mnemonicParsing="false" onAction="#addState" stylesheets="@css/AutomatonProgramTheme.css" text="Add" GridPane.columnIndex="7" GridPane.rowIndex="2">
+                                             <GridPane.margin>
+                                                <Insets left="25.0" />
+                                             </GridPane.margin>
+                                          </Button>
+                                          <Label text="STATES" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                             <GridPane.margin>
+                                                <Insets />
+                                             </GridPane.margin>
+                                          </Label>
+                                          <Label text="Output" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                                             <GridPane.margin>
+                                                <Insets left="25.0" />
+                                             </GridPane.margin>
+                                          </Label>
+                                          <TextField fx:id="outputStateName" GridPane.columnIndex="4" GridPane.rowIndex="2">
+                                             <GridPane.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </GridPane.margin>
+                                          </TextField>
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                              </GridPane>
+                           </center>
                         </BorderPane>
                      </children>
                   </AnchorPane>

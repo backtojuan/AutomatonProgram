@@ -9,6 +9,7 @@ package model;
 public class Transition {
 	
 	private String input;
+	private String output;
 	private State source;
 	private State destination;
 //-----------------------------------------------------------------------------------------------------------
@@ -27,11 +28,33 @@ public class Transition {
 	/**
 	 * This method returns the input symbol of a transition.
 	 * <b>Pre:</b> the Transition exists.
-	 * <b>Pos:</b> 
+	 * <b>Pos:</b> the attribute obtained is indeed, the input symbol.
 	 * @return the input symbol for this transition.
 	 */
 	public String getInput() {
 		return input;
+	}
+//-----------------------------------------------------------------------------------------------------------
+	/**
+	 * This method returns the output symbol of a transition only if the automaton is a mealy one, otherwise.
+	 * this value must be null
+	 * <b>Pre:</b> The transition exists.
+	 * <b>Pre:</b> The automaton is a mealy one. <br>
+	 * <b>Pos:</b> the attribute obtained is indeed, the output symbol.
+	 * @return  the output symbol for this transition.
+	 */
+	public String getOutput() {
+		return output;
+	}
+//-----------------------------------------------------------------------------------------------------------
+	/**
+	 * This method sets the output value changing it to a new one.
+	 * <b>Pre:</b> the state exists. <br>
+	 * <b>Pro:</b> the value is indeed, changed properly. <br>
+	 * @param newOutput the new output for this state
+	 */
+	public void setOutput(String newOutput) {
+		this.output = newOutput;
 	}
 //-----------------------------------------------------------------------------------------------------------
 	/**
@@ -59,7 +82,8 @@ public class Transition {
 	 * This method returns a string report of this transition, including it's input symbol, source and destination
 	 */
 	public String toString() {
-		return ""+ input + ", "+source+"-"+destination+"";
+		return "Input: "+ input + "\n" + "Output:" + output  + "\n" + " Source: " + source + "\n" 
+				+ " Destination: " + destination + "\n";
 	}
 //-----------------------------------------------------------------------------------------------------------
 }

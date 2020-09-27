@@ -27,3 +27,7 @@
 	-fx-border-width: 5 0 0 0;
 	-fx-border-color: darkcyan;
 }
+.combo-box{
+	-fx-background-color: darkcyan; -fx-text-fill: white;
+	-fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
