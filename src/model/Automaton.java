@@ -1,5 +1,6 @@
 //-----------------------------------------------------------------------------------------------------------
 package model;
+import java.util.HashMap;
 //-----------------------------------------------------------------------------------------------------------
 import java.util.LinkedList;
 import java.util.List;
@@ -28,8 +29,11 @@ public class Automaton {
 	 * Secondary attributes and constants for this class.
 	 * This attributes are related mostly to the data structured use to represent a finite automaton, a vertex.
 	 */
+	private boolean isConnected;
 	private int numberOfStates;
 	private int numberOfTransitions;
+	private HashMap<String, State> map;
+	
 //-----------------------------------------------------------------------------------------------------------
 	/**
 	 * <b>Automaton constructor</b>
@@ -41,6 +45,7 @@ public class Automaton {
 		this.type = type;
 		states = new LinkedList<State>();
 		transitions = new LinkedList<Transition>();
+		map = new HashMap<String, State>();
 	}
 //-----------------------------------------------------------------------------------------------------------
 	/**
@@ -94,6 +99,16 @@ public class Automaton {
 	}
 //-----------------------------------------------------------------------------------------------------------
 	/**
+	 * This method returns a boolean value to know if the automaton is connected or not
+	 * <b>Pre:</b> the automaton exists. <br>
+	 * <b>Pos:</b> the attribute obtained is indeed, the boolean value. <br>
+	 * @return the boolean value
+	 */
+	public boolean getIsConnected() {
+		return isConnected;
+	}
+//-----------------------------------------------------------------------------------------------------------
+	/**
 	 * This method returns the total states of an automaton.
 	 * <b>Pre:</b> the automaton exists. <br>
 	 * <b>Pos:</b> the attribute obtained is indeed, the number of states. <br> 
@@ -101,6 +116,26 @@ public class Automaton {
 	 */
 	public int getNumberOfStates() {
 		return numberOfStates;
+	}
+//-----------------------------------------------------------------------------------------------------------
+	/**
+	 * This method returns the map of this graph(automaton).
+	 * <b>Pre:</b> the automaton exists. <br>
+	 * <b>Pos:</b> the attribute obtained is indeed, the map. <br>
+	 * @return the map for this graph(automaton)
+	 */
+	public HashMap<String, State> getMap(){
+		return map;
+	}
+//-----------------------------------------------------------------------------------------------------------
+	/**
+	 * This method sets the is connected boolean value of an automaton.
+	 * <b>Pre:</b> the automaton exists. <br>
+	 * <b>Pos:</b> the attribute obtained is indeed, the boolean value. <br>
+	 * @param newIsConnected the boolean value.
+	 */
+	public void setIsConnected(Boolean newIsConnected) {
+		this.isConnected = newIsConnected;
 	}
 //-----------------------------------------------------------------------------------------------------------
 	/**
@@ -152,6 +187,7 @@ public class Automaton {
 	 */
 	public void addState(State state) {
 		state.setIndex(numberOfStates);
+		map.put(state.getName(), state);
 		states.add(state);
 		numberOfStates++;
 	}
@@ -168,6 +204,7 @@ public class Automaton {
 	public void addTransition(Transition transition) {
 		transitions.add(transition);
 		transition.getDestination().setPred(transition.getSource());
+		transition.getSource().getAdjList().add(transition);
 		numberOfTransitions++;
 	}
 //-----------------------------------------------------------------------------------------------------------
@@ -188,14 +225,60 @@ public class Automaton {
 		return state;
 	}
 //-----------------------------------------------------------------------------------------------------------
-	@Override
+	public void deleteState(State state, int pos) {
+		states.remove(pos);		
+		if(state.getPred() != null) {
+			state.getPred().getAdjList().remove(state.getPred().findEdge(state));
+		}
+	}
+
+//-----------------------------------------------------------------------------------------------------------
 	/**
-	 * This method returns a string report of an automaton
+	 * This method along with the dfsVisit verifies the states that are reachable from every state. 
+	 * When finished if all vertex(states) have as color BLACK it can be deduced that the graph is connected.
 	 */
-	public String toString() {
-		return "Type: " + type + "\n" + "Total States: " + numberOfStates + "\n" + "Total transitions: " 
-				+ numberOfTransitions + "\n" ;
+	public void dfs() {
+		for (State state : states) {
+			state.setColor(State.WHITE);
+			state.setPred(null);
+		}
+		int time = 0;
+		for (State state : states) {
+			if (state.getColor() == State.WHITE)
+				time = dfsVisit(state, time);
+		}
+	}
+	
+	/**
+	 * This auxiliar method allows the dfs main method to discover the ones that are reachable from the state received.
+	 * @param state the initial state to start searching inside the graph
+	 * @param time the necessary time or steps to find states from the origin state 
+	 * @return the time the time value
+	 */
+	private int dfsVisit(State state, int time) {
+		time++;
+		state.setInitialStamp(time);
+		state.setColor(State.GRAY);
+		for (int i = 0; i < state.getAdjList().size(); i++) {
+			State state2 = state.getAdjList().get(i).getDestination();
+			if (state2.getColor() == State.WHITE) {
+				state2.setPred(state);
+				time = dfsVisit(state2, time);
+			}
+		}
+		state.setColor(State.BLACK);
+		time++;
+		state.setFinalStamp(time);
+		return time;
 	}
 //-----------------------------------------------------------------------------------------------------------
+		@Override
+		/**
+		 * This method returns a string report of an automaton
+		 */
+		public String toString() {
+			return "Type: " + type + "\n" + "Total States: " + numberOfStates + "\n" + "Total transitions: " 
+					+ numberOfTransitions + "\n" ;
+		}
 }
 //-----------------------------------------------------------------------------------------------------------

@@ -1,5 +1,9 @@
 //-----------------------------------------------------------------------------------------------------------
 package model;
+
+import java.util.ArrayList;
+import java.util.List;
+
 //-----------------------------------------------------------------------------------------------------------
 /**
  * This class manage the necessary attributes, constansts and methods to create states for an existing finite automaton.
@@ -34,6 +38,9 @@ public class State {
 	
 	//allows to identified which state is previous to the current one.
 	private State pred;
+	
+	//list of all the edges(transitions) that are adjacent to this vertex(state)
+	private List<Transition> adjList;
 //-----------------------------------------------------------------------------------------------------------
 	/**
 	 * <b>Class constructor</b>
@@ -44,6 +51,7 @@ public class State {
 		this.output = null;
 		pred = null;
 		color = WHITE;
+		adjList = new ArrayList<Transition>();
 	}
 //-----------------------------------------------------------------------------------------------------------
 	/**
@@ -114,7 +122,7 @@ public class State {
 	 * <b>Pos:</b> the attribute obtained is indeed, the color. <br>
 	 * @return color of the vertex. 
 	 */
-	public int color() {
+	public int getColor() {
 		return color;
 	}
 //-----------------------------------------------------------------------------------------------------------
@@ -126,6 +134,16 @@ public class State {
 	 */
 	public State getPred() {
 		return pred;
+	}
+//-----------------------------------------------------------------------------------------------------------
+	/**
+	 * This method returns the adjacency list of a vertex(state)
+	 * <b>Pre:</b> the state exists. <br>
+	 * <b>Pos:</b> the object obtained is indeed, the adjacency list of this state. <br>
+	 * @return the adjacency list for this state.
+	 */
+	public List<Transition> getAdjList(){
+		return adjList;
 	}
 //-----------------------------------------------------------------------------------------------------------
 	/**
@@ -176,6 +194,36 @@ public class State {
 	 */
 	public void setPred(State newPred) {
 		this.pred = newPred;
+	}
+//-----------------------------------------------------------------------------------------------------------
+	 /**
+	 * This method specifies if a state is adjacent to this one
+	 * <b>Pre:</b> the state exists. <br>
+	 * @param state the state to verify if its adjacent
+	 * @return a boolean value that specifies if either this state is adjacent to the one of the parameter
+	 */
+	public boolean isAdjacent(State state) {
+		for (int i = 0; i < adjList.size(); i++) {
+			if(adjList.get(i).getDestination().equals(state)) {
+				return true;
+			}
+		}
+		return false;
+	}
+//-----------------------------------------------------------------------------------------------------------
+	/**
+	 * This method finds an edge inside the adjacency list.
+	 * <b>Pre:</b> the state exists. <br>
+	 * @param state the state that is connected to the edge that it needs to be found.
+	 * @return the edge that connects this state with the one of the parameter.
+	 */
+	public Transition findEdge(State state) {
+		for (int i = 0; i < adjList.size(); i++) {
+			if(adjList.get(i).getDestination().equals(state)) {
+				return adjList.get(i);
+			}
+		}
+		return null;
 	}
 //-----------------------------------------------------------------------------------------------------------
 	@Override

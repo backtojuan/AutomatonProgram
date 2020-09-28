@@ -82,8 +82,8 @@ public class Transition {
 	 * This method returns a string report of this transition, including it's input symbol, source and destination
 	 */
 	public String toString() {
-		return "Input: "+ input + "\n" + "Output:" + output  + "\n" + " Source: " + source + "\n" 
-				+ " Destination: " + destination + "\n";
+		return "Input: "+ input + "\n" + "Output:" + output  + "\n" + "Source: " + source.getName() + "\n" 
+				+ "Destination: " + destination.getName() + "\n";
 	}
 //-----------------------------------------------------------------------------------------------------------
 }

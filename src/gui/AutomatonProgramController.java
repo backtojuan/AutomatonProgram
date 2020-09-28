@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -32,6 +33,9 @@ public class AutomatonProgramController {
     
     @FXML
     private Button stateButton;
+    
+    @FXML
+    private Button startButton;
     
 	@FXML
     private TextField symbolsOfAlphabet;
@@ -64,6 +68,21 @@ public class AutomatonProgramController {
     private ComboBox<String> automatonType;
     
     @FXML
+    private Label listOfUnaccesibleStates;
+
+    @FXML
+    private Label listOfConnectedStates;
+
+    @FXML
+    private Label listOfOriginalStates;
+
+    @FXML
+    private Label listOfGroupedStates;
+
+    @FXML
+    private Label listOfMinimumStates;
+    
+    @FXML
     private Alert alert;
     
     private Automaton automaton;
@@ -93,6 +112,7 @@ public class AutomatonProgramController {
     	symbolsOfAlphabet.setDisable(true);    	
     	numberOfStates.setDisable(true);    	
     	numberOfTransitions.setDisable(true);
+    	startButton.setDisable(true);
     }
 //__________________________________________________________________________________________________________________________________
     /**
@@ -152,6 +172,7 @@ public class AutomatonProgramController {
     	symbolsOfAlphabet.setDisable(false);    	
     	numberOfStates.setDisable(false);    	
     	numberOfTransitions.setDisable(false);
+    	startButton.setDisable(false);
     }
 //__________________________________________________________________________________________________________________________________
     /**
@@ -185,19 +206,24 @@ public class AutomatonProgramController {
      */
     @FXML
     private void clearForm(ActionEvent event) {
-    	if(automaton != null && (automaton.getStates().size() > 0) && (automaton.getTransitions().size()>0)) {
+    	if(automaton != null && (automaton.getNumberOfStates() > 0) && (automaton.getNumberOfTransitions() > 0)) {
 	    	clearAutomaton();
 	    	clearStates();
 	    	clearTransitions(); 
 	    	enableAutomaton();
 	      	stateName.setDisable(false);
-	      	outputStateName.setDisable(false);
-	    	stateButton.setDisable(false);
+	      	outputStateName.setDisable(false);	    	
 	    	inputSymbol.setDisable(false);
 	    	outputTransitionName.setDisable(false);
 	    	sourceStateName.setDisable(false);
 	    	destinationStateName.setDisable(false);
-	    	transitionButton.setDisable(false);
+	    	conectedButton.setDisable(false);
+	    	minimumButton.setDisable(false);
+	    	listOfUnaccesibleStates.setText("---");
+	    	listOfConnectedStates.setText("---");
+	    	listOfOriginalStates.setText("---");
+	    	listOfGroupedStates.setText("---");
+	    	listOfMinimumStates.setText("---");	    	
     	}
     	else {
     		showWarning("Before you start adding a new automaton you must have"  + "\n" + 
@@ -262,28 +288,32 @@ public class AutomatonProgramController {
      * @param event the event triggered by the user.
      */
     private void addState(ActionEvent event) {    	
-    	State state = new State(stateName.getText());
-    	System.out.println(totalstates);
-    	System.out.println("entré");
-    	if(automaton.getType().equals(Automaton.MOORE)) {
-    		state.setOutput(outputStateName.getText());
+    	if(stateName.getText() == "" || outputStateName.getText() == "") {
+    		showWarning("You cannot add a state if you have not enter the requested information yet");
     	}
-    	if(automaton.getNumberOfStates()==0) {
-    		automaton.addState(state);
-    		automaton.setInitialState(state);
-    		showCorrect("The state was added successfully" + "\n" + state.toString());    				
-    	}
-    	else {
-    		automaton.addState(state);
-    		showCorrect("The state was added successfully" + "\n" + state.toString());
+    	else {    		
+    		State state = new State(stateName.getText());
+        	if(automaton.getType().equals(Automaton.MOORE)) {
+        		state.setOutput(outputStateName.getText());
+        	}
+        	if(automaton.getNumberOfStates()==0) {
+        		automaton.addState(state);
+        		automaton.setInitialState(state);
+        		showCorrect("The state was added successfully" + "\n" + state.toString());    				
+        	}
+        	else {
+        		automaton.addState(state);
+        		showCorrect("The state was added successfully" + "\n" + state.toString());
 
-    	}    		
-    	if(totalstates-1 <= 0) {
-    		System.out.println("voy a terminar");
-    		disableStates();
-    		enableTransitions(automaton.getType());
+        	}    		
+        	if(totalstates-1 <= 0) {        		
+        		disableStates();
+        		enableTransitions(automaton.getType());
+        	}
+        	clearStates();
+        	totalstates-=1;
     	}
-    	totalstates-=1;
+    	
     }
 //__________________________________________________________________________________________________________________________________
     @FXML
@@ -292,19 +322,27 @@ public class AutomatonProgramController {
      * @param event the event triggered by the user.
      */
     private void addTransition(ActionEvent event) { 
-    	System.out.println(totaltransitions);  
-    	System.out.println("entré");
-    	Transition transition = new Transition(inputSymbol.getText(),automaton.searchState(sourceStateName.getText()),
-    			automaton.searchState(destinationStateName.getText()));
-    	if(automaton.getType().equals(Automaton.MEALY)) {
-    		transition.setOutput(outputTransitionName.getText());
+    	if(inputSymbol.getText() == " " || outputStateName.getText() == " " || sourceStateName.getText() == " "
+    			|| destinationStateName.getText() == " ") {
+    		showWarning("You cannot add a state if you have not enter the requested information yet");
     	}
-    	showCorrect("The transition was added successfully"+ "\n" + transition.toString());
-    	totaltransitions-=1;	
-    	if(totaltransitions-1 <= 0){
-    		System.out.println("voy a terminar");
-    		disableTransitions();
-    	}    	
+    	else if (automaton.searchState(sourceStateName.getText()) == null || automaton.searchState(destinationStateName.getText()) == null) {
+    		showWarning("either one or both of the states are not in this automaton." + "\n" + "Try again");
+    	}
+    	else {    			
+    		Transition transition = new Transition(inputSymbol.getText(),automaton.searchState(sourceStateName.getText()),
+    				automaton.searchState(destinationStateName.getText()));
+    		if(automaton.getType().equals(Automaton.MEALY)) {
+    			transition.setOutput(outputTransitionName.getText());
+    		}
+    		showCorrect("The transition was added successfully"+ "\n" + transition.toString());
+    		System.out.println(transition.toString());
+    		if(totaltransitions-1 <= 0){    		
+    			disableTransitions();
+    		}   
+    		clearTransitions();
+    		totaltransitions-=1;
+    	}
     }
 //__________________________________________________________________________________________________________________________________
     @FXML
@@ -313,7 +351,31 @@ public class AutomatonProgramController {
      * @param event the event triggered by the user.
      */
     private void generateConnectedAutomaton(ActionEvent event) {
-    	
+    	if(automaton != null && (automaton.getNumberOfStates() > 0) && (automaton.getNumberOfTransitions() > 0)) {
+    		automaton.dfs();
+    		boolean isConnected = true;
+    		String report = "";
+    		String report2 = "";
+    		for(int i=0;i<automaton.getStates().size();i++) {
+    			if(automaton.getStates().get(i).getColor() == State.GRAY) {
+    				System.out.println(automaton.getStates().get(i).getName() + " is the problem");
+    				isConnected = false;
+    				report += automaton.getStates().get(i).getName() + " ";
+    			}
+    			else {
+    				report2 += automaton.getStates().get(i).getName() + " ";
+    			}
+    		}
+    		automaton.setIsConnected(isConnected);
+    		listOfUnaccesibleStates.setText(report);
+    		listOfConnectedStates.setText(report2);
+    		showCorrect("The connected automaton has beeen generated" + "\n" + "Check the results on the resume tab");
+    		conectedButton.setDisable(true);
+    	}
+    	else {
+    		showWarning("Before generating this you must have added an"  + "\n" + 
+					"automaton before with at least one state and one transition");
+    	}
     }
 //__________________________________________________________________________________________________________________________________
     @FXML
@@ -322,7 +384,19 @@ public class AutomatonProgramController {
      * @param event the event triggered by the user.
      */
     private void generateMinimumAutomaton(ActionEvent event) {
-    	
+    	if(automaton != null && (automaton.getNumberOfStates() > 0) && (automaton.getNumberOfTransitions() > 0)) {
+    		String report = "";
+    		for(int i=0;i<automaton.getStates().size();i++) {
+    			report += automaton.getStates().get(i).getName() + " ";
+    		}
+    		listOfOriginalStates.setText(report);
+    		showCorrect("The minimum automaton has beeen generated" + "\n" + "Check the results on the resume tab");
+    		minimumButton.setDisable(true);
+    	}
+    	else {
+    		showWarning("Before generating this you must have added an"  + "\n" + 
+					"automaton before with at least one state and one transition");
+    	}
     }
 //__________________________________________________________________________________________________________________________________
     @FXML
@@ -332,17 +406,23 @@ public class AutomatonProgramController {
      */
     private void startCreation(ActionEvent event) {
     	try {
-    		disableAutomaton();
-    		String type = automatonType.getValue();
-    	   	String line = symbolsOfAlphabet.getText();
-        	String[] alphabet = line.split(",");
-        	automaton = new Automaton(alphabet,type);
-        	this.totalstates = Integer.parseInt(numberOfStates.getText());
-        	this.totaltransitions = Integer.parseInt(numberOfTransitions.getText());
-        	automaton.setNumberOfStates(this.totalstates);        	
-        	automaton.setNumberOfTransitions(this.totaltransitions);
-        	enableStates(type);
-        	showCorrect("The automaton was created successfully" + "\n" + automaton.toString());
+    		if(automatonType.getValue()==null || symbolsOfAlphabet.getText() == " " || 
+    				numberOfStates.getText() == " " || numberOfTransitions.getText() == " ") {
+    			showWarning("You cannot add an automaton if you have" + "\n" + "not enter the requested information yet");
+    		}
+    		else {
+    			String type = automatonType.getValue();
+        	   	String line = symbolsOfAlphabet.getText();
+            	String[] alphabet = line.split(",");
+            	automaton = new Automaton(alphabet,type);
+            	this.totalstates = Integer.parseInt(numberOfStates.getText());
+            	this.totaltransitions = Integer.parseInt(numberOfTransitions.getText());
+            	automaton.setNumberOfStates(this.totalstates);        	
+            	automaton.setNumberOfTransitions(this.totaltransitions);
+            	disableAutomaton();
+            	enableStates(type);
+            	showCorrect("The automaton was created successfully" + "\n" + automaton.toString());
+    		}
     	}
     	catch(NumberFormatException nfe) {
     		showError("Please, enter integer values for the required number fields");
